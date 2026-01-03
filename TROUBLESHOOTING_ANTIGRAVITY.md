@@ -342,7 +342,7 @@ Existen **dos niveles** donde se controlan las herramientas:
         "ROAM_API_TOKEN": "roam-graph-token-N1QX6YFwWSf9MmiacikRr-pKb847-",
         "ROAM_GRAPH_NAME": "campodepruebas"
       },
-      "disabledTools": ["roam_add_todo","roam_fetch_page_by_title","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions","roam_fetch_block_with_children"],
+      "disabledTools": ["roam_add_todo","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions"],
       "disabled": false
     }
   }
@@ -360,7 +360,7 @@ Existen **dos niveles** donde se controlan las herramientas:
         "ROAM_API_TOKEN": "roam-graph-token-zhodLiFyErPgqEo7oM_NCYAiDqg7J",
         "ROAM_GRAPH_NAME": "mundano"
       },
-      "disabledTools": ["roam_add_todo","roam_fetch_page_by_title","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions","roam_fetch_block_with_children"],
+      "disabledTools": ["roam_add_todo","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions"],
       "disabled": false
     }
   }
@@ -378,25 +378,25 @@ Existen **dos niveles** donde se controlan las herramientas:
         "ROAM_API_TOKEN": "roam-graph-token-DfKgeLhv5yxLfTxQ1uDOwRadZGEz8",
         "ROAM_GRAPH_NAME": "cosasAcademicas"
       },
-      "disabledTools": ["roam_add_todo","roam_fetch_page_by_title","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions","roam_fetch_block_with_children"],
+      "disabledTools": ["roam_add_todo","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions"],
       "disabled": false
     }
   }
 }
 ```
 
-### kulturama
+### kulturana
 ```json
 {
   "mcpServers": {
-    "roam-research-kulturama": {
+    "roam-research-kulturana": {
       "command": "node",
       "args": ["c:\\Users\\redk8\\OneDrive\\Documentos\\proyectosVibeCoding\\roam-research-mcp\\build\\index.js"],
       "env": {
-        "ROAM_API_TOKEN": "roam-graph-token-zxXSjclQoxfsjHmlyLrI0PNjlrbTh",
-        "ROAM_GRAPH_NAME": "kulturama"
+        "ROAM_API_TOKEN": "roam-graph-token-5bveIjin1Isb5uO2At4XNQOKd-rzZ",
+        "ROAM_GRAPH_NAME": "kulturana"
       },
-      "disabledTools": ["roam_add_todo","roam_fetch_page_by_title","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions","roam_fetch_block_with_children"],
+      "disabledTools": ["roam_add_todo","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions"],
       "disabled": false
     }
   }
