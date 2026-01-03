@@ -112,7 +112,6 @@ export const toolSchemas = {
     },
   },
   */
-  /*
   roam_create_outline: {
     name: 'roam_create_outline',
     description: 'Add a structured outline to an existing page or block (by title text or uid), with customizable nesting levels. To create a new page with an outline, use the `roam_create_page` tool instead. The `outline` parameter defines *new* blocks to be created. To nest content under an *existing* block, provide its UID or exact text in `block_text_uid`, and ensure the `outline` array contains only the child blocks with levels relative to that parent. Including the parent block\'s text in the `outline` array will create a duplicate block. Best for:\n- Adding supplementary structured content to existing pages\n- Creating temporary or working outlines (meeting notes, brainstorms)\n- Organizing thoughts or research under a specific topic\n- Breaking down subtopics or components of a larger concept\nBest for simpler, contiguous hierarchical content. For complex nesting (e.g., tables) or granular control over block placement, consider `roam_process_batch_actions` instead.\n**API Usage Note:** This tool performs verification queries after creation. For large outlines (10+ items) or when rate limits are a concern, consider using `roam_process_batch_actions` instead to minimize API calls.\nIMPORTANT: Before using this tool, ensure that you have loaded into context the \'Roam Markdown Cheatsheet\' resource.',
@@ -162,8 +161,6 @@ export const toolSchemas = {
       required: ['outline']
     }
   },
-  */
-  /*
   roam_import_markdown: {
     name: 'roam_import_markdown',
     description: 'Import nested markdown content into Roam under a specific block. Can locate the parent block by UID (preferred) or by exact string match within a specific page. If a `parent_string` is provided and the block does not exist, it will be created. Returns a nested structure of the created blocks.\n**API Usage Note:** This tool fetches the full nested structure after import for verification. For large imports or when rate limits are a concern, consider using `roam_process_batch_actions` with pre-structured actions instead.\nIMPORTANT: Before using this tool, ensure that you have loaded into context the \'Roam Markdown Cheatsheet\' resource.',
@@ -200,7 +197,6 @@ export const toolSchemas = {
       required: ['content']
     }
   },
-  */
   /*
   roam_search_for_tag: {
     name: 'roam_search_for_tag',
@@ -504,7 +500,6 @@ export const toolSchemas = {
     }
   },
   */
-  /*
   roam_process_batch_actions: {
     name: 'roam_process_batch_actions',
     description: '**RATE LIMIT EFFICIENT:** This is the most API-efficient tool for multiple block operations. Combine all create/update/delete operations into a single call whenever possible. For intensive page updates or revisions, prefer this tool over multiple sequential calls.\n\nExecutes a sequence of low-level block actions (create, update, move, delete) in a single, non-transactional batch. Actions are executed in the provided order.\n\n**UID Placeholders for Nested Blocks:** Use `{{uid:name}}` syntax for parent-child references within the same batch. The server generates proper random UIDs and returns a `uid_map` showing placeholder→UID mappings. Example: `{ uid: "{{uid:parent1}}", string: "Parent" }` then `{ location: { "parent-uid": "{{uid:parent1}}" }, string: "Child" }`. Response includes `{ success: true, uid_map: { "parent1": "Xk7mN2pQ9" } }`.\n\nFor actions on existing blocks, a valid block UID is required. Note: Roam-flavored markdown, including block embedding with `((UID))` syntax, is supported within the `string` property for `create-block` and `update-block` actions. For actions on existing blocks or within a specific page context, it is often necessary to first obtain valid page or block UIDs. Tools like `roam_fetch_page_by_title` or other search tools can be used to retrieve these UIDs before executing batch actions. For simpler, sequential outlines, `roam_create_outline` is often more suitable.\nIMPORTANT: Before using this tool, ensure that you have loaded into context the \'Roam Markdown Cheatsheet\' resource.',
@@ -571,8 +566,6 @@ export const toolSchemas = {
       required: ['actions']
     }
   },
-  */
-  /*
   roam_fetch_block_with_children: {
     name: 'roam_fetch_block_with_children',
     description: 'Fetch a block by its UID along with its hierarchical children down to a specified depth. Returns a nested object structure containing the block\'s UID, text, order, and an array of its children.',
@@ -593,7 +586,6 @@ export const toolSchemas = {
       required: ['block_uid']
     },
   },
-  */
   /*
   roam_create_table: {
     name: 'roam_create_table',
