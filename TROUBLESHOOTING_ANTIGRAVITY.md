@@ -225,3 +225,188 @@ roam-research-mcp/
 - **Fork del usuario:** https://github.com/camiloluvino/roam-research-mcp
 - **Repo original:** https://github.com/2b3pro/roam-research-mcp
 - **Rama con fix:** `fix/antigravity-tools`
+
+---
+
+## Actualización: Solución Refinada (Enero 2026)
+
+Las siguientes secciones documentan lecciones aprendidas y una estrategia más robusta para trabajar con Antigravity.
+
+---
+
+## Estrategia de Archivos Separados por Grafo
+
+### Problema
+Consolidar múltiples grafos de Roam en un solo `mcp_config.json` con varias herramientas cada uno causa inestabilidad en Antigravity. Incluso con 4-5 herramientas por grafo, el payload combinado puede exceder los límites.
+
+### Solución
+Mantener **un archivo de configuración por grafo**. Cuando necesites trabajar con un grafo específico:
+1. Reemplazar el contenido de `mcp_config.json` con la configuración de ese grafo
+2. Reiniciar Antigravity
+
+### Ubicación Sugerida para Backups
+```
+c:\Users\redk8\.gemini\antigravity\configs\
+├── mcp_config_campodepruebas.json
+├── mcp_config_mundano.json
+├── mcp_config_cosasAcademicas.json
+└── mcp_config_kulturama.json
+```
+
+---
+
+## Template Mínimo Recomendado (3 herramientas)
+
+Basado en pruebas extensivas, estas **3 herramientas** cubren las necesidades más comunes sin causar "tool bloat":
+
+| Herramienta | Función |
+|-------------|---------|
+| `roam_create_outline` | Crear contenido estructurado en páginas |
+| `roam_search_by_text` | Buscar texto en el grafo |
+| `roam_datomic_query` | Búsquedas avanzadas (requiere descomentar en código) |
+
+### JSON Template
+```json
+{
+  "mcpServers": {
+    "roam-research-NOMBRE_GRAFO": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\redk8\\OneDrive\\Documentos\\proyectosVibeCoding\\roam-research-mcp\\build\\index.js"
+      ],
+      "env": {
+        "ROAM_API_TOKEN": "roam-graph-token-XXXXXXXXX",
+        "ROAM_GRAPH_NAME": "NOMBRE_GRAFO"
+      },
+      "disabledTools": [
+        "roam_add_todo",
+        "roam_fetch_page_by_title",
+        "roam_import_markdown",
+        "roam_markdown_cheatsheet",
+        "roam_remember",
+        "roam_recall",
+        "roam_process_batch_actions",
+        "roam_fetch_block_with_children"
+      ],
+      "disabled": false
+    }
+  }
+}
+```
+
+---
+
+## Dos Niveles de Control (Importante)
+
+### ¿Por qué `disabledTools` no es suficiente?
+
+Existen **dos niveles** donde se controlan las herramientas:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  NIVEL 1: Código Fuente (src/tools/schemas.ts)                  │
+│  ────────────────────────────────────────────────────────────── │
+│  Herramientas comentadas con /* */ NO existen para el servidor  │
+│  Reduce el payload ANTES de enviarlo                            │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼ El servidor envía TODAS las herramientas no comentadas
+                              
+┌─────────────────────────────────────────────────────────────────┐
+│  NIVEL 2: Configuración Cliente (mcp_config.json)               │
+│  ────────────────────────────────────────────────────────────── │
+│  disabledTools filtra DESPUÉS de recibir el payload             │
+│  Si el crash ocurre durante recepción, este filtro llega tarde  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Implicación Práctica
+- Si una herramienta está **comentada en el código**, no aparecerá aunque la quites de `disabledTools`
+- Para habilitar `roam_datomic_query`, debes:
+  1. Descomentarla en `src/tools/schemas.ts`
+  2. Recompilar con `npm run build`
+  3. Quitarla de `disabledTools` en `mcp_config.json`
+
+---
+
+## Templates por Grafo
+
+### campodepruebas
+```json
+{
+  "mcpServers": {
+    "roam-research-campodepruebas": {
+      "command": "node",
+      "args": ["c:\\Users\\redk8\\OneDrive\\Documentos\\proyectosVibeCoding\\roam-research-mcp\\build\\index.js"],
+      "env": {
+        "ROAM_API_TOKEN": "roam-graph-token-N1QX6YFwWSf9MmiacikRr-pKb847-",
+        "ROAM_GRAPH_NAME": "campodepruebas"
+      },
+      "disabledTools": ["roam_add_todo","roam_fetch_page_by_title","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions","roam_fetch_block_with_children"],
+      "disabled": false
+    }
+  }
+}
+```
+
+### mundano
+```json
+{
+  "mcpServers": {
+    "roam-research-mundano": {
+      "command": "node",
+      "args": ["c:\\Users\\redk8\\OneDrive\\Documentos\\proyectosVibeCoding\\roam-research-mcp\\build\\index.js"],
+      "env": {
+        "ROAM_API_TOKEN": "roam-graph-token-zhodLiFyErPgqEo7oM_NCYAiDqg7J",
+        "ROAM_GRAPH_NAME": "mundano"
+      },
+      "disabledTools": ["roam_add_todo","roam_fetch_page_by_title","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions","roam_fetch_block_with_children"],
+      "disabled": false
+    }
+  }
+}
+```
+
+### cosasAcademicas
+```json
+{
+  "mcpServers": {
+    "roam-research-cosasAcademicas": {
+      "command": "node",
+      "args": ["c:\\Users\\redk8\\OneDrive\\Documentos\\proyectosVibeCoding\\roam-research-mcp\\build\\index.js"],
+      "env": {
+        "ROAM_API_TOKEN": "roam-graph-token-DfKgeLhv5yxLfTxQ1uDOwRadZGEz8",
+        "ROAM_GRAPH_NAME": "cosasAcademicas"
+      },
+      "disabledTools": ["roam_add_todo","roam_fetch_page_by_title","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions","roam_fetch_block_with_children"],
+      "disabled": false
+    }
+  }
+}
+```
+
+### kulturama
+```json
+{
+  "mcpServers": {
+    "roam-research-kulturama": {
+      "command": "node",
+      "args": ["c:\\Users\\redk8\\OneDrive\\Documentos\\proyectosVibeCoding\\roam-research-mcp\\build\\index.js"],
+      "env": {
+        "ROAM_API_TOKEN": "roam-graph-token-zxXSjclQoxfsjHmlyLrI0PNjlrbTh",
+        "ROAM_GRAPH_NAME": "kulturama"
+      },
+      "disabledTools": ["roam_add_todo","roam_fetch_page_by_title","roam_import_markdown","roam_markdown_cheatsheet","roam_remember","roam_recall","roam_process_batch_actions","roam_fetch_block_with_children"],
+      "disabled": false
+    }
+  }
+}
+```
+
+---
+
+## Notas Finales
+
+Esta documentación refleja el estado de la solución a **Enero 2026**. La limitación de "tool bloat" es un problema conocido en la comunidad MCP y puede ser resuelto en futuras versiones de Antigravity o del protocolo MCP.
+
+**Solución ideal futura:** Implementar filtrado de herramientas a nivel de servidor mediante variables de entorno, eliminando la necesidad de comentar código.
