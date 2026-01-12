@@ -1,6 +1,9 @@
-# Roam Research CLI v2.8.0
+---
+version: 2.9.1
+date: 2026-01-12
+---
 
-As of 2026-01-09
+# Roam Research CLI
 
 Command-line interface for interacting with Roam Research graphs.
 
