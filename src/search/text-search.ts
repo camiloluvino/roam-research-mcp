@@ -13,7 +13,12 @@ export class TextSearchHandler extends BaseSearchHandler {
   }
 
   async execute(): Promise<SearchResult> {
-    const { text, page_title_uid, case_sensitive = false, limit = -1, offset = 0 } = this.params;
+    const { text, page_title_uid, case_sensitive = false, limit = -1, offset = 0, scope = 'blocks' } = this.params;
+
+    // Handle page_titles scope (namespace search)
+    if (scope === 'page_titles') {
+      return this.executePageTitleSearch();
+    }
 
     // Get target page UID if provided for scoped search
     let targetPageUid: string | undefined;
@@ -103,5 +108,55 @@ export class TextSearchHandler extends BaseSearchHandler {
     const formattedResults = SearchUtils.formatSearchResults(resolvedResults, searchDescription, !targetPageUid);
     formattedResults.total_count = totalCount;
     return formattedResults;
+  }
+
+  /**
+   * Search for page titles matching a namespace prefix.
+   * Normalizes the search text to ensure trailing slash for prefix matching.
+   */
+  private async executePageTitleSearch(): Promise<SearchResult> {
+    const { text, limit = -1, offset = 0 } = this.params;
+
+    // Normalize namespace: ensure trailing slash for prefix matching
+    const namespace = text.endsWith('/') ? text : `${text}/`;
+
+    // Query for pages with titles starting with the namespace
+    const queryLimit = limit === -1 ? '' : `:limit ${limit}`;
+    const queryOffset = offset === 0 ? '' : `:offset ${offset}`;
+
+    const queryStr = `[:find ?title ?uid
+                      :in $ ${queryLimit} ${queryOffset}
+                      :where
+                      [?e :node/title ?title]
+                      [?e :block/uid ?uid]
+                      [(clojure.string/starts-with? ?title "${namespace}")]]`;
+
+    const rawResults = await q(this.graph, queryStr, []) as [string, string][];
+
+    // Get total count
+    const countQueryStr = `[:find (count ?e)
+                           :in $
+                           :where
+                           [?e :node/title ?title]
+                           [(clojure.string/starts-with? ?title "${namespace}")]]`;
+    const totalCountResults = await q(this.graph, countQueryStr, []) as number[][];
+    const totalCount = totalCountResults[0] ? totalCountResults[0][0] : 0;
+
+    // Format results: page UID as block_uid, title as content
+    const matches = rawResults.map(([title, uid]) => ({
+      block_uid: uid,
+      content: title,
+      page_title: title
+    }));
+
+    // Sort alphabetically by title
+    matches.sort((a, b) => a.content.localeCompare(b.content));
+
+    return {
+      success: true,
+      matches,
+      message: `Found ${matches.length} page(s) with namespace "${namespace}"`,
+      total_count: totalCount
+    };
   }
 }

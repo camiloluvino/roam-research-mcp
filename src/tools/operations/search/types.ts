@@ -36,6 +36,7 @@ export interface HierarchySearchParams extends BaseSearchParams {
 // Text search parameters
 export interface TextSearchParams extends BaseSearchParams {
   text: string;
+  scope?: 'blocks' | 'page_titles';
 }
 
 // Status search parameters

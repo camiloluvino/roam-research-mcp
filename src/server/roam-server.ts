@@ -333,6 +333,7 @@ export class RoamServer {
             const params = cleanedArgs as {
               text: string;
               page_title_uid?: string;
+              scope?: 'blocks' | 'page_titles';
             };
             const result = await toolHandlers.searchByText(params);
             return {

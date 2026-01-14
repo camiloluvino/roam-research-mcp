@@ -37,6 +37,9 @@ echo "Buy milk" | roam save --todo
 # Search your graph and pipe results to another tool
 roam search "important" --json | jq .
 
+# Search for pages by namespace prefix
+roam search --namespace "Convention"    # Finds all Convention/* pages
+
 # Fetch a page by title
 roam get "Roam Research"
 
@@ -84,7 +87,7 @@ The MCP server exposes these tools to AI assistants (like Claude), enabling them
 | `roam_fetch_block_with_children` | Fetch a block and its nested children by UID (resolves refs). |
 | `roam_create_page` | Create new pages, optionally with mixed text and table content. |
 | `roam_update_page_markdown` | Update a page using smart diff (preserves block UIDs). |
-| `roam_search_by_text` | Full-text search across the graph or within specific pages. |
+| `roam_search_by_text` | Full-text search across the graph or within specific pages. Supports namespace prefix search for page titles. |
 | `roam_search_block_refs` | Find blocks that reference a page, tag, or block UID. |
 | `roam_search_by_status` | Find TODO or DONE items. |
 | `roam_search_for_tag` | Find blocks containing specific tags (supports exclusion). |

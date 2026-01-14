@@ -39,6 +39,7 @@ export interface TextSearchParams {
   case_sensitive?: boolean;
   limit?: number;
   offset?: number;
+  scope?: 'blocks' | 'page_titles';
 }
 
 // Base class for all search handlers

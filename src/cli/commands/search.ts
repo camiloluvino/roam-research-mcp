@@ -41,6 +41,7 @@ interface SearchOptions extends GraphOptions {
   regex?: string;
   regexFlags?: string;
   any?: boolean;
+  namespace?: string;
 }
 
 export function createSearchCommand(): Command {
@@ -67,11 +68,16 @@ export function createSearchCommand(): Command {
     .option('--inputs <json>', 'JSON array of inputs for Datalog query')
     .option('--regex <pattern>', 'Client-side regex filter on Datalog results')
     .option('--regex-flags <flags>', 'Regex flags (e.g., "i" for case-insensitive)')
+    .option('--namespace <prefix>', 'Search for pages by namespace prefix (e.g., "Convention" finds "Convention/*")')
     .addHelpText('after', `
 Examples:
   # Text search
   roam search "meeting notes"               # Find blocks containing text
   roam search api integration               # Multiple terms (AND logic)
+
+  # Namespace search (find pages by title prefix)
+  roam search --namespace Convention        # Find all Convention/* pages
+  roam search --namespace "Convention/"     # Same (trailing slash optional)
 
   # Stdin search
   echo "urgent project" | roam search       # Pipe terms
@@ -89,7 +95,7 @@ Examples:
 
 Output format:
   Markdown: Flat results with UIDs and content (no hierarchy).
-  JSON:     [{ block_uid, content, page_title }]
+  JSON:     [{ block_uid, content, page_title }] or [{ page_uid, page_title }] for namespace
 
 Note: For hierarchical output with children, use 'roam get --tag/--text' instead.
 `)
@@ -120,6 +126,39 @@ Note: For hierarchical output with children, use 'roam get --tag/--text' instead
         }
 
         const searchOps = new SearchOperations(graph);
+
+        // Namespace search mode (search page titles by prefix)
+        if (options.namespace) {
+          const result = await searchOps.searchByText({
+            text: options.namespace,
+            scope: 'page_titles'
+          });
+
+          if (!result.success) {
+            exitWithError(result.message || 'Namespace search failed');
+          }
+
+          let matches = result.matches.slice(0, limit);
+
+          if (options.json) {
+            // For JSON output, return page_uid and page_title
+            const jsonMatches = matches.map(m => ({
+              page_uid: m.block_uid,
+              page_title: m.page_title
+            }));
+            console.log(JSON.stringify(jsonMatches, null, 2));
+          } else {
+            if (matches.length === 0) {
+              console.log('No pages found.');
+            } else {
+              console.log(`Found ${result.matches.length} page(s)${result.matches.length > limit ? ` (showing first ${limit})` : ''}:\n`);
+              for (const match of matches) {
+                console.log(`- ${match.page_title} (${match.block_uid})`);
+              }
+            }
+          }
+          return;
+        }
 
         // Datalog query mode (bypasses other search options)
         if (options.query) {

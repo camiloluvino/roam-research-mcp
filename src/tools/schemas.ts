@@ -361,21 +361,27 @@ export const toolSchemas = {
   },
   roam_search_by_text: {
     name: 'roam_search_by_text',
-    description: 'Search for blocks containing specific text across all pages or within a specific page. This tool supports pagination via the `limit` and `offset` parameters.',
+    description: 'Search for blocks containing specific text across all pages or within a specific page. Use `scope: "page_titles"` to search for pages by namespace prefix (e.g., "Convention/" finds all pages starting with that prefix). This tool supports pagination via the `limit` and `offset` parameters.',
     inputSchema: {
       type: 'object',
       properties: withMultiGraphParams({
         text: {
           type: 'string',
-          description: 'The text to search for'
+          description: 'The text to search for. When scope is "page_titles", this is the namespace prefix (trailing slash optional).'
+        },
+        scope: {
+          type: 'string',
+          enum: ['blocks', 'page_titles'],
+          default: 'blocks',
+          description: 'Search scope: "blocks" for block content (default), "page_titles" for page title namespace prefix matching.'
         },
         page_title_uid: {
           type: 'string',
-          description: 'Optional: Title or UID of the page to search in (UID is preferred for accuracy). If not provided, searches across all pages.'
+          description: 'Optional: Title or UID of the page to search in (UID is preferred for accuracy). If not provided, searches across all pages. Only used when scope is "blocks".'
         },
         case_sensitive: {
           type: 'boolean',
-          description: 'Optional: Whether the search should be case-sensitive. If false, it will search for the provided text, capitalized versions, and first word capitalized versions.',
+          description: 'Optional: Whether the search should be case-sensitive. If false, it will search for the provided text, capitalized versions, and first word capitalized versions. Only used when scope is "blocks".',
           default: false
         },
         limit: {

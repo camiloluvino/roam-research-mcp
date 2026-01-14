@@ -93,6 +93,7 @@ export class ToolHandlers {
   async searchByText(params: {
     text: string;
     page_title_uid?: string;
+    scope?: 'blocks' | 'page_titles';
   }) {
     return this.searchOps.searchByText(params);
   }
