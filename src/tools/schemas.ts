@@ -575,17 +575,7 @@ export const toolSchemas = {
               },
               "location": {
                 type: 'object',
-                description: 'Specifies where to place a block, used in "create-block" and "move-block" actions.',
-                properties: {
-                  "parent-uid": {
-                    type: 'string',
-                    description: 'The UID of the parent block or page.'
-                  },
-                  "order": {
-                    type: ['integer', 'string'],
-                    description: 'The position of the block under its parent (e.g., 0, 1, 2) or a keyword ("first", "last").'
-                  }
-                }
+                description: 'Where to place the block. Use {"parent-uid": "UID", "order": "last"} format. order can be "0", "1", "first", "last".'
               }
             },
             required: ['action']
@@ -626,8 +616,8 @@ export const toolSchemas = {
           description: 'The UID of the parent block or page where the table should be created.'
         },
         order: {
-          type: ['integer', 'string'],
-          description: 'Optional: Position under the parent. Can be a number (0-based) or "first"/"last". Defaults to "last".',
+          type: 'string',
+          description: 'Optional: Position under the parent. Can be a number as string ("0", "1") or "first"/"last". Defaults to "last".',
           default: 'last'
         },
         headers: {
@@ -678,8 +668,8 @@ export const toolSchemas = {
           description: 'The UID of the new parent block or page'
         },
         order: {
-          type: ['integer', 'string'],
-          description: 'Position under the new parent. Can be a number (0-based index) or "first"/"last". Defaults to "last".',
+          type: 'string',
+          description: 'Position under the new parent. Can be a number as string ("0", "1") or "first"/"last". Defaults to "last".',
           default: 'last'
         }
       }),
